@@ -1,0 +1,14 @@
+The essay printTest needs x
+    say "Value is:".
+    say x.
+    add 1 to x.
+    say "New value is:".
+    say x.
+
+The essay sayHello
+    say "Hello, World!".
+
+
+Read sayHello.
+x is 42
+Read printTest with x.

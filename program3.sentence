@@ -1,0 +1,14 @@
+x is 1
+maxNum is 100
+Until x is maxNum repeat this paragraph
+    when module x by 3 is 0 and module x by 5 is 0 enter this paragraph
+        say "FizzBuzz".
+    otherwise enter this paragraph
+        when module x by 3 is 0 enter this paragraph
+            say "Fizz".
+        otherwise enter this paragraph
+            when module x by 5 is 0 enter this paragraph
+                say "Buzz".
+            otherwise enter this paragraph
+                say x.
+    add 1 to x.
