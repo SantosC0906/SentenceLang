@@ -1,0 +1,9 @@
+
+Starting at x is 1 repeat this paragraph 5 times.       '' for loop  ''
+    When x is greater than 3 enter this paragraph  '' if statement ''
+        subtract 1 from x.                         '' subtract operator ''
+       say "hello world".                          '' print statemtent ''
+    otherwise enter this paragraph
+        say "x is too small".
+        add 1 to x.                                '' addition operator ''
+

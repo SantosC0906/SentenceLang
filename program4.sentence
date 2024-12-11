@@ -1,0 +1,7 @@
+x is 1
+maxNum is 5
+Until x is maxNum repeat this paragraph
+    say x.
+    add 1 to x.
+
+rewrite.
