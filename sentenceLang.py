@@ -355,21 +355,85 @@ def handle_for_loop(variables, lines, current_line, var_name, start_val, times):
     next_line = current_line + 1
     current_indent = len(lines[current_line]) - len(lines[current_line].lstrip())
     
-    while (next_line < len(lines) and 
-           len(lines[next_line]) - len(lines[next_line].lstrip()) > current_indent):
-        body_lines.append(lines[next_line])
+    while next_line < len(lines):
+        line = lines[next_line].rstrip()
+        if not line:  # Skip empty lines
+            next_line += 1
+            continue
+            
+        line_indent = len(line) - len(line.lstrip())
+        if line_indent <= current_indent:
+            break
+            
+        body_lines.append(line)
         next_line += 1
     
     # Execute loop
     for _ in range(times):
-        for line in body_lines:
-            line = line.strip()
-            if line:  # Skip empty lines
-                if handle_arithmetic(variables, line):
-                    continue
-                if handle_print(variables, line):
-                    continue
-                # Add other statement handling as needed
+        i = 0
+        while i < len(body_lines):
+            line = body_lines[i].strip()
+            if not line:
+                i += 1
+                continue
+                
+            # Handle if statements
+            if_match = re.match(r"When (.*?) enter this paragraph", line)
+            if if_match:
+                condition = if_match.group(1)
+                if_block = []
+                else_block = []
+                j = i + 1
+                in_else = False
+                
+                while j < len(body_lines):
+                    curr_line = body_lines[j].strip()
+                    if not curr_line:
+                        j += 1
+                        continue
+                        
+                    if "otherwise enter this paragraph" in curr_line:
+                        in_else = True
+                        j += 1
+                        continue
+                        
+                    if len(body_lines[j]) - len(body_lines[j].lstrip()) <= len(body_lines[i]) - len(body_lines[i].lstrip()):
+                        break
+                        
+                    if in_else:
+                        else_block.append(curr_line)
+                    else:
+                        if_block.append(curr_line)
+                    j += 1
+                
+                if evaluate_condition(variables, condition):
+                    for stmt in if_block:
+                        execute_statement(variables, stmt)
+                else:
+                    for stmt in else_block:
+                        execute_statement(variables, stmt)
+                        
+                i = j
+                continue
+            
+            # Handle other statements
+            if handle_arithmetic(variables, line):
+                i += 1
+                continue
+            if handle_print(variables, line):
+                i += 1
+                continue
+            
+            i += 1
+    
+    return next_line
+
+def execute_statement(variables, line):
+    """Helper function to execute a single statement"""
+    if handle_arithmetic(variables, line):
+        return
+    if handle_print(variables, line):
+        return
 
 def handle_until_loop(variables, lines, current_line, var_name, max_var):
     """Handle until loop with natural condition"""
@@ -594,6 +658,6 @@ def handle_unless_statement(variables, lines, current_line, match_obj):
 # Example usage
 if __name__ == "__main__":
     try:
-        interpret("program3.sentence")
+        interpret("program.sentence")
     except Exception as e:
         print(f"Error executing program: {e}")
